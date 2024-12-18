@@ -1,0 +1,116 @@
+/* RESET DE ESTILOS BÁSICOS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* ESTILOS GENERALES */
+body {
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* SECCIÓN DE TOTALES */
+.totales h2 {
+    margin-bottom: 10px;
+    color: #34495e;
+    text-align: center;
+}
+
+.totales p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.totales span {
+    font-weight: bold;
+}
+
+/* FORMULARIO */
+.formulario {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #27ae60;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2ecc71;
+}
+
+/* TABLA DE REGISTROS */
+.tabla-registros {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tabla-registros th, .tabla-registros td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.tabla-registros th {
+    background-color: #34495e;
+    color: white;
+}
+
+.tabla-registros td.positivo {
+    color: #27ae60;
+}
+
+.tabla-registros td.negativo {
+    color: #e74c3c;
+}
+
+/* DESCARGAR */
+.descargar {
+    margin-top: 20px;
+}
+
+.descargar h2 {
+    margin-bottom: 10px;
+}

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Financiera</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+    /* RESET DE ESTILOS BÁSICOS */
+* 
+
+/* ESTILOS GENERALES */
+body {
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* SECCIÓN DE TOTALES */
+.totales h2 {
+    margin-bottom: 10px;
+    color: #34495e;
+    text-align: center;
+}
+
+.totales p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.totales span {
+    font-weight: bold;
+}
+
+/* FORMULARIO */
+.formulario {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #27ae60;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2ecc71;
+}
+
+/* TABLA DE REGISTROS */
+.tabla-registros {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tabla-registros th, .tabla-registros td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.tabla-registros th {
+    background-color: #34495e;
+    color: white;
+}
+
+.tabla-registros td.positivo {
+    color: #27ae60;
+}
+
+.tabla-registros td.negativo {
+    color: #e74c3c;
+}
+
+/* DESCARGAR */
+.descargar {
+    margin-top: 20px;
+}
+
+.descargar h2 {
+    margin-bottom: 10px;
+}
+    
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestión Financiera Personal</h1>
+    </header>
+
+    <div class="container">
+        <!-- Totales por cuenta -->
+        <div class="totales">
+            <h2>Totales por Cuenta</h2>
+            <div id="totalSantander">Santander: €0.00</div>
+            <div id="totalImaginSuper">Imagin Supermercado: €0.00</div>
+            <div id="totalImaginAhorro">Imagin Ahorro: €0.00</div>
+            <div id="totalEfectivo">Efectivo: €0.00</div>
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="formulario">
+            <h2>Registrar Gasto o Ingreso</h2>
+            <form id="formulario">
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" required>
+                    <option value="gasto">Gasto</option>
+                    <option value="ingreso">Ingreso</option>
+                </select>
+
+                <label for="cuenta">Cuenta:</label>
+                <select id="cuenta" required>
+                    <option value="Santander">Santander</option>
+                    <option value="Imagin Supermercado">Imagin Supermercado</option>
+                    <option value="Imagin Ahorro">Imagin Ahorro</option>
+                    <option value="Efectivo">Efectivo</option>
+                </select>
+
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" required>
+                    <option value="Comida">Comida</option>
+                    <option value="Cervezas">Cervezas</option>
+                    <option value="Comer Fuera">Comer Fuera</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Capricho">Capricho</option>
+                    <option value="Regalo">Regalo</option>
+                    <option value="Gastos Casa">Gastos Casa</option>
+                    <option value="Universidad">Universidad</option>
+                    <option value="Vinted">Vinted</option>
+                    <option value="Baloncesto">Baloncesto</option>
+                    <option value="Suscripciones">Suscripciones</option>
+                    <option value="Clases">Clases</option>
+                </select>
+
+                <label for="monto">Monto (€):</label>
+                <input type="number" id="monto" step="any" required>
+
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha" required>
+
+                <button type="submit">Registrar</button>
+            </form>
+		<div>
+        	<h2>Filtrar Registros por Fecha</h2>
+        	<label for="filtroFechaInicio">Fecha de inicio:</label>
+        	<input type="date" id="filtroFechaInicio" />
+        	<label for="filtroFechaFin">Fecha de fin:</label>
+        	<input type="date" id="filtroFechaFin" />
+        	<button id="filtrarRegistros">Filtrar</button>
+    	</div>
+
+            <h2>Registros</h2>
+            <table class="tabla-registros">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Cuenta</th>
+                        <th>Categoría</th>
+                        <th>Monto (€)</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="registros"></tbody>
+            </table>
+
+		<label for="fechaInicio">Fecha de inicio:</label>
+		<input type="date" id="fechaInicio" />
+
+		<label for="fechaFin">Fecha de fin:</label>
+		<input type="date" id="fechaFin" />
+            <button id="descargarExcel">Descargar Excel</button>
+        </div>
+    </div>
+
+    <script>
+        let registros = JSON.parse(localStorage.getItem('registros')) || [];
+        const totales = {
+            Santander: 0,
+            "Imagin Supermercado": 0,
+            "Imagin Ahorro": 0,
+            Efectivo: 0
+        };
+
+        document.getElementById('formulario').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const tipo = document.getElementById('tipo').value;
+            const cuenta = document.getElementById('cuenta').value;
+            const categoria = document.getElementById('categoria').value;
+            const monto = parseFloat(document.getElementById('monto').value);
+            const fecha = document.getElementById('fecha').value;
+
+            if (!monto || !fecha) {
+                alert('Por favor, complete todos los campos correctamente.');
+                return;
+            }
+
+            registros.push({ tipo, cuenta, categoria, monto, fecha });
+            localStorage.setItem('registros', JSON.stringify(registros));
+
+            renderRegistros();
+            actualizarTotales();
+
+            document.getElementById('formulario').reset();
+        });
+
+        function actualizarTotales() {
+            Object.keys(totales).forEach(cuenta => totales[cuenta] = 0);
+
+            registros.forEach(({ tipo, cuenta, monto }) => {
+                if (tipo === 'ingreso') {
+                    totales[cuenta] += monto;
+                } else {
+                    totales[cuenta] -= monto;
+                }
+            });
+
+            document.getElementById('totalSantander').textContent = `Santander: €${totales.Santander.toFixed(2)}`;
+            document.getElementById('totalImaginSuper').textContent = `Imagin Supermercado: €${totales["Imagin Supermercado"].toFixed(2)}`;
+            document.getElementById('totalImaginAhorro').textContent = `Imagin Ahorro: €${totales["Imagin Ahorro"].toFixed(2)}`;
+            document.getElementById('totalEfectivo').textContent = `Efectivo: €${totales.Efectivo.toFixed(2)}`;
+        }
+
+        function renderRegistros() {
+            const tbody = document.getElementById('registros');
+            tbody.innerHTML = '';
+
+            registros.forEach((registro, index) => {
+                const row = `<tr>
+                    <td>${registro.tipo}</td>
+                    <td>${registro.cuenta}</td>
+                    <td>${registro.categoria}</td>
+                    <td>€${registro.monto.toFixed(2)}</td>
+                    <td>${registro.fecha}</td>
+                    <td>
+                        <button onclick="editarRegistro(${index})">Editar</button>
+                        <button onclick="eliminarRegistro(${index})">Eliminar</button>
+                    </td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function editarRegistro(index) {
+            const registro = registros[index];
+
+            document.getElementById('tipo').value = registro.tipo;
+            document.getElementById('cuenta').value = registro.cuenta;
+            document.getElementById('categoria').value = registro.categoria;
+            document.getElementById('monto').value = registro.monto;
+            document.getElementById('fecha').value = registro.fecha;
+
+            registros.splice(index, 1);
+            renderRegistros();
+            actualizarTotales();
+        }
+
+        function eliminarRegistro(index) {
+            if (confirm("¿Estás seguro de que quieres eliminar este registro?")) {
+                registros.splice(index, 1);
+                localStorage.setItem('registros', JSON.stringify(registros));
+                renderRegistros();
+                actualizarTotales();
+            }
+        }
+
+        document.getElementById('descargarExcel').addEventListener('click', () => {
+            if (registros.length === 0) {
+                alert('No hay datos para exportar.');
+                return;
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(registros);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+            XLSX.writeFile(workbook, "gestion_financiera.xlsx");
+        });
+
+        renderRegistros();
+        actualizarTotales();
+    </script>
+</body>
+</html>
